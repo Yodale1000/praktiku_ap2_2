@@ -37,4 +37,17 @@ fun main() {
     println(task2.getSummary())
     println(task3.getSummary())
     println(project.getSummary())
+
+
+    val a: Prioritizable = Unit(" Grundlegende Arbeitseinheit ", " Das ist die Beschreibung ", 10, Status.TODO) // OK
+    val b = " Aufgabe " // OK
+    val c = RecurringTask(
+        " Deadline Task ", " Mit Deadline ", 3,
+        listOf(" Schritt 1 ", " Schritt 2 "), 120, Status.TODO, -3 // OK
+    ) // OK
+    // val d: Unit = Prioritizable() // CF
+    val e: Unit = c // OK
+    val f: Unit = SingleTask(" Spezifischer Task ", " Beschreibung ", 5, null, 45, Status.DOING) // OK
+    // val g: Prioritizable = f as RecurringTask // LF
+    val h: Prioritizable = c // OK
 }
