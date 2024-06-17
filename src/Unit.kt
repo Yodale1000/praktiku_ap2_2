@@ -2,7 +2,7 @@ class DeadlineException(message: String) : Exception(message)
 
 open class Unit(
     val title: String,
-    val description: String,
+    private val description: String,
     var deadline: Int,
     var status: Status
 ) : Prioritizable {
@@ -11,7 +11,7 @@ open class Unit(
     }
 
     open fun getSummary(): String {
-        return "'${title}' mit der Beschreibung '${description}' muss bis in ${deadline} Tag(en) erledigt sein. " +
+        return "'${title}' mit der Beschreibung '${description}' muss bis in $deadline Tag(en) erledigt sein. " +
                 "Der aktuelle Status ist ${status}."
     }
 
@@ -35,7 +35,7 @@ open class Unit(
         return (statusPrio() + deadlinePrio()) / 2
     }
 
-    var priority: Priority? = null
+    val priority: Priority
         get() = Priority.fromFactor(this.prioritize())
 }
 
@@ -43,17 +43,15 @@ abstract class Task(
     title: String,
     description: String,
     deadline: Int,
-    var steps: List<String>? = null,
+    private var steps: List<String>? = null,
     var estimatedTime: Int = 0,
     status: Status
 ) : Unit(title, description, deadline, status) {
-    init {
-        estimatedTime = estimatedTime ?: 0
-    }
+
 
     override fun getSummary(): String {
         return "Die Aufgabe " + super.getSummary() + "Die Arbeitsschritte sind: ${steps?.joinToString() ?: "Keine"}. " +
-                "Es wird voraussichtlich ${estimatedTime} Minuten dauern."
+                "Es wird voraussichtlich $estimatedTime Minuten dauern."
     }
 
     private fun stepsPrio(): Double {
@@ -85,7 +83,7 @@ class SingleTask(
     estimatedTime: Int,
     status: Status
 ) : Task(title, description, deadline, steps, estimatedTime, status) {
-    var reminder: Int = 0
+    val reminder: Int
         get() {
             return if (deadline > 1) deadline - 2 else 0
         }
@@ -99,9 +97,7 @@ class RecurringTask(
     estimatedTime: Int,
     status: Status,
     var frequency: Int = 0
-) : Task(title, description, deadline, steps, estimatedTime, status) {
-
-}
+) : Task(title, description, deadline, steps, estimatedTime, status)
 
 
 class Project(
@@ -111,7 +107,7 @@ class Project(
     var tasks: MutableList<Task>,
     status: Status
 ) : Unit(name, description, deadline, status) {
-    var progress: Double = 0.0
+    private val progress: Double
         get() {
             if (tasks.isNotEmpty()) {
                 var count = 0.0

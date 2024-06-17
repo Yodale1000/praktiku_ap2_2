@@ -1,5 +1,5 @@
-class Manager(val projects: MutableList<Project>) {
-    val todo = mutableListOf<Task>()
+class Manager(private val projects: MutableList<Project>) {
+    private val todo = mutableListOf<Task>()
 
     fun generateToDoList() {
         for (project in projects) {
@@ -12,7 +12,7 @@ class Manager(val projects: MutableList<Project>) {
     }
 
     fun getPriorityToDo(): MutableList<Task> {
-        var newToDo = mutableListOf<Task>()
+        val newToDo = mutableListOf<Task>()
         for (task in todo) {
             if (task.priority == Priority.HIGH && task.status != Status.DONE) {
                 newToDo.add(task)
@@ -22,7 +22,7 @@ class Manager(val projects: MutableList<Project>) {
     }
 
     fun getAvgTime(): Int {
-        var totalTime: Int = 0
+        var totalTime = 0
         for (task in todo) {
             if (task.priority == Priority.HIGH) {
                 totalTime += task.estimatedTime
